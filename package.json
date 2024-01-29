@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.8.1",
+    "@pinata/sdk": "^1.1.23",
     "@walletconnect/ethereum-provider": "^2.10.4",
     "@walletconnect/modal": "^2.6.2",
     "@walletconnect/web3-provider": "^1.8.0",
@@ -18,9 +19,12 @@
     "magic-sdk": "^21.2.0",
     "moralis": "^1.8.0",
     "moralis-v1": "^1.13.0",
+    "formidable": "^2.1.2",
     "next": "12.1.5",
     "react": "18.0.0",
     "react-dom": "18.0.0",
+    "react-dropzone": "^14.2.3",
+    "react-icons": "^5.0.1",
     "react-moralis": "^1.4.0",
     "web3uikit": "^0.1.159"
   },
