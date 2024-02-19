@@ -1,7 +1,6 @@
 import formidable from "formidable";
 import fs from "fs";
 
-import FormData from "form-data";
 const pinataSDK = require("@pinata/sdk");
 const PINATA_API_KEY = process.env.NEXT_PUBLIC_PINATA_API_KEY
 const PINATA_API_SECRET = process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY
@@ -34,15 +33,15 @@ const saveFile = async (file) => {
 export default async function handler(req, res) {
     if (req.method === "POST") {
         try {
-
             const form = new formidable.IncomingForm();
             form.parse(req, async function (err, fields, files) {
                 if (err) {
                     console.log({ err });
-                    return res.status(500).send("Upload Error");
+                    return res.status(500).send("Upload IMAGE Error");
                 }
                 const response = await saveFile(files.file);
                 const { IpfsHash } = response;
+
 
                 return res.send(IpfsHash);
             });

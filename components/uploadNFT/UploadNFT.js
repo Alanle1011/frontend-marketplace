@@ -5,7 +5,7 @@ import pubImage from "/public/pug.png"
 import { Button } from "web3uikit"
 import { useRouter } from "next/router"
 
-const UploadNFT= ({uploadToIPFS, uploading, cid})=>{
+const UploadNFT= ({uploadToIPFS, uploadJSONToIPFS, uploading, cid})=>{
     const router = useRouter()
 
     const [active, setActive] = useState(0);
@@ -64,7 +64,7 @@ const UploadNFT= ({uploadToIPFS, uploading, cid})=>{
                 </div>
             </div>
             <div>
-                <Button onClick={async ()=> createNFT(name, image, description, router, website, filSide)}>
+                <Button onClick={() => uploadJSONToIPFS(image,name, description)}>
                     Upload
                 </Button>
             </div>
