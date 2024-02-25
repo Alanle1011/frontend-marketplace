@@ -1,11 +1,22 @@
 import React, { useState } from "react"
 import UploadNFT from "../components/uploadNFT/UploadNFT"
+import { ethers } from "ethers"
+import nftMinterAbi from "../constants/NftMinter.json"
+import { useMoralis, useWeb3Contract } from "react-moralis"
+import networkMapping from "../constants/networkMapping.json"
+import { useNotification } from "web3uikit"
 
 export default function UploadNftPage(){
-
+    const dispatchNotification = useNotification();
+    const { runContractFunction } = useWeb3Contract();
+    const { chainId, account, isWeb3Enabled } = useMoralis()
+    const chainString = chainId ?? parseInt(chainId).toString()
+    const minterAddress =  chainId ? networkMapping[chainString].NftMinter[0] : null
     const [cid, setCid] = useState("");
     const [jsonCid, setJsonCid] = useState("");
     const [uploading, setUploading] = useState(false);
+
+
     const uploadToIPFS = async (fileImg) => {
 
         if (fileImg) {
@@ -38,6 +49,7 @@ export default function UploadNftPage(){
                 metadata.name = name;
                 metadata.image = `https://ipfs.io/ipfs/${cid}`;
                 metadata.description = description;
+                metadata.attributes = [];
 
                 const res = await fetch("/api/upload-json-metadata", {
                     method: "POST",
@@ -53,8 +65,34 @@ export default function UploadNftPage(){
             }
         }
         if(jsonCid){
-            createNFT(jsonCid)
+            createNft(jsonCid)
         }
+    }
+
+    async function createNft(uri) {
+        debugger
+        const mintOptions = {
+            abi: nftMinterAbi,
+            contractAddress: minterAddress,
+            functionName: "safeMint",
+            params: {
+                uri: `ipfs://${uri}`,
+            },
+        }
+
+        await runContractFunction({
+            params: mintOptions,
+            onSuccess: () => handleMintSuccess(),
+            onError: (error) => console.log(error),
+        })
+    }
+
+    const handleMintSuccess = () => {
+        dispatchNotification({
+            type: "success",
+            message: "Mint Nft proceeds",
+            position: "topR",
+        })
     }
     return (
         <div className={'px-14'}>

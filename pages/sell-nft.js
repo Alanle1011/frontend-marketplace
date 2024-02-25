@@ -11,9 +11,8 @@ export default function Home() {
     const { chainId, account, isWeb3Enabled } = useMoralis()
     const chainString = chainId ?? parseInt(chainId).toString()
     const marketplaceAddress =  chainId ? networkMapping[chainString].NftMarketPlace[0] : null
-    const dispatch = useNotification()
+    const dispatchNotification = useNotification()
     const [proceeds, setProceeds] = useState("0")
-
     const { runContractFunction } = useWeb3Contract()
 
     async function approveAndList(data) {
@@ -65,8 +64,9 @@ export default function Home() {
         })
     }
 
+    //Notification
     async function handleListSuccess() {
-        dispatch({
+        dispatchNotification({
             type: "success",
             message: "NFT listing",
             title: "NFT listed",
@@ -75,7 +75,7 @@ export default function Home() {
     }
 
     const handleWithdrawSuccess = () => {
-        dispatch({
+        dispatchNotification({
             type: "success",
             message: "Withdrawing proceeds",
             position: "topR",

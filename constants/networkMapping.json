@@ -7,6 +7,9 @@
   "0xaa36a7": {
     "NftMarketPlace": [
       "0xC48BE47e4edcC44A78227FdE98c1e7CDe579d7C1"
+    ],
+    "NftMinter": [
+      "0xCE64882565f8995bdc60216b906483bFCA278d76"
     ]
   }
 }
