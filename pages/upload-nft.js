@@ -47,7 +47,7 @@ export default function UploadNftPage(){
                 //make metadata
                 const metadata = {};
                 metadata.name = name;
-                metadata.image = `https://ipfs.io/ipfs/${cid}`;
+                metadata.image = `ipfs://${cid}`;
                 metadata.description = description;
                 metadata.attributes = [];
 
