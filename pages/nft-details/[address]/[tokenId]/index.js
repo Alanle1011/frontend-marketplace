@@ -6,6 +6,7 @@ import {useState} from "react"
 import nftAbi from "../../../../constants/BasicNft.json"
 import Image from "next/image"
 import Link from "next/link"
+import { truncateStr } from "../../../../utils/string"
 
 const Details = () => {
     const router = useRouter()
@@ -18,6 +19,8 @@ const Details = () => {
     const [showModal, setShowModal] = useState(false)
     const hideModal = () => setShowModal(false)
     const dispatchNotification = useNotification()
+    const [nft, setNft] = useState()
+    const [nftOwner, setNftOwner] = useState("")
 
     const { runContractFunction: getTokenURI } = useWeb3Contract({
         abi: nftAbi,
@@ -28,13 +31,39 @@ const Details = () => {
         }
     })
 
+    const BASE_URL = process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL || "https://eth-sepolia.g.alchemy.com/v2/cG8GOT4HrTWOuGF8guWUq7JtQyJfY7H2"
+    const GET_NFT_URL = `${BASE_URL}/getNFTMetadata/?contractAddress=${address}&tokenId=${tokenId}&refreshCache=false`
+    const GET_NFT_OWNER_URL = `${BASE_URL}/getOwnersForToken/?contractAddress=${address}&tokenId=${tokenId}`
+
+    var requestOptions = {
+        method: "get",
+        redirect: "follow"
+    }
+    const getNFT = () => {
+        fetch(GET_NFT_URL, requestOptions)
+            .then(response => response.json())
+            .then(response => {
+                setNft(response);
+            })
+            .catch(error => console.log("error", error))
+    }
+    const getNFTOwner = () => {
+        fetch(GET_NFT_OWNER_URL, requestOptions)
+            .then(response => response.json())
+            .then(response => {
+                setNftOwner(response.owners[0]);
+            })
+            .catch(error => console.log("error", error))
+    }
+    console.log('nft', nft)
     async function updateUI() {
         if(address && tokenId){
-            const tokenURI = await getTokenURI()
+            let tokenURI = await getTokenURI()
             console.log(`The TokenURI is ${tokenURI}`)
-            // We are going to cheat a little here...
+            if (!tokenURI.includes("ipfs://")) {
+                tokenURI = "ipfs://" + tokenURI;
+            }
             if (tokenURI) {
-                // IPFS Gateway: A server that will return IPFS files from a "normal" URL.
                 const requestURL = tokenURI.replace(
                     "ipfs://",
                     "https://ipfs.io/ipfs/"
@@ -51,14 +80,14 @@ const Details = () => {
                 setTokenDescription(tokenURIResponse.description)
                 setTokenAttributes(tokenURIResponse.attributes)
             }
-
         }
-
     }
 
     useEffect(() => {
         if (isWeb3Enabled) {
-            updateUI()
+            updateUI();
+            getNFT();
+            getNFTOwner();
         }
     }, [isWeb3Enabled])
 
@@ -81,40 +110,40 @@ const Details = () => {
 
     return (
         <div className="w-full m-5">
-            <div className="border border-gray-500 w-fit rounded-2xl">
-                <div className=" px-5 flex items-center justify-between border-gray-500 bg-blue-300 h-10 rounded-t-2xl">
-                    <div className='flex items-center'>
-                        <Image height="20"
-                               width="20" src='/eth-icon.svg'
-                               alt={"ethIcon"} />
-                        <p className='font-medium'>Sepolia testnet</p>
+            <div className='flex gap-6'>
+                <div className="border border-gray-500 w-fit rounded-2xl">
+                    <div
+                        className=" px-5 flex items-center justify-between border-gray-500 bg-blue-300 h-10 rounded-t-2xl">
+                        <div className='flex items-center'>
+                            <Image height="20"
+                                   width="20" src='/eth-icon.svg'
+                                   alt={"ethIcon"} />
+                            <p className='font-medium'>Sepolia testnet</p>
+                        </div>
+
+                        <a href={imageURI || null} target="_blank" rel="noreferrer">
+                            <Image height="20"
+                                   width="20" src='/share-icon.png'
+                                   alt={"shareIcon"}
+                            />
+                        </a>
                     </div>
-
-                    <Link href={imageURI || null}>
-                        <Image height="20"
-                               width="20" src='/share-icon.png'
-                               alt={"shareIcon"}
-
-
-                        />
-                    </Link>
-
-
+                    <div className='p-10'>
+                        <Image
+                            loader={() => imageURI}
+                            src={imageURI}
+                            height="500"
+                            width="500"
+                            alt={"nftImage"} />
+                    </div>
                 </div>
-                <div className='p-10'>
-
-                    <Image
-                        loader={() => imageURI}
-                        src={imageURI}
-                        height="500"
-                        width="500"
-                        alt={"nftImage"} />
-
+                <div>
+                    <h1 className="font-bold text-2xl">{tokenName} #{tokenId}</h1>
+                    <a href={`https://sepolia.etherscan.io/address/${nftOwner}`} target="_blank" rel="noreferrer">
+                        <p>Owned by <span className="text-blue-500">{truncateStr(nftOwner, 12) || null}</span></p>
+                    </a>
                 </div>
-
             </div>
-
-            <h1 className="p-4 font-bold text-2xl">{tokenName}</h1>
         </div>
     )
 }

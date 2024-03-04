@@ -1,18 +1,15 @@
 import styles from "../styles/Home.module.css"
-import { Form, useNotification, Button, Card } from "web3uikit"
+import { useNotification, Button, Card } from "web3uikit"
 import { useMoralis, useWeb3Contract } from "react-moralis"
-import { ethers } from "ethers"
-import nftAbi from "../constants/BasicNft.json"
 import nftMarketplaceAbi from "../constants/NftMarketPlace.json"
 import networkMapping from "../constants/networkMapping.json"
 import { useEffect, useState } from "react"
-import NFTBox from "../components/NFTBox"
 import Image from "next/image"
-import { hexToString, truncateStr } from "../utils/string"
-import UpdateListingModal from "../components/UpdateListingModal"
+import {truncateStr } from "../utils/string"
 import SellModal from "../components/SellModal"
 import { useQuery } from "@apollo/client"
-import { GET_ACTIVE_ITEMS, GET_LISTED_ITEMS_BY_ADDRESS } from "../queries/subgraphQueries"
+import { GET_LISTED_ITEMS_BY_ADDRESS } from "../queries/subgraphQueries"
+import Link from "next/link"
 
 
 export default function Home() {
@@ -43,8 +40,6 @@ export default function Home() {
             .then(response => response.json())
             .then(response => {
                 const nfts = response
-
-
                 setNftList(nfts["ownedNfts"])
             })
             .catch(error => console.log("error", error))
@@ -58,7 +53,6 @@ export default function Home() {
         setTokenId(tokenId)
 
     }
-
 
     //Notification
     async function handleListSuccess() {
@@ -141,41 +135,56 @@ export default function Home() {
                         </div>
                     ) : (
                         nftList.map((nft) => {
-                            const imageURI = nft.metadata.image
+                            let imageURI = nft.metadata.image
+                            if (imageURI.includes("ipfs://")) {
+                                imageURI = imageURI.replace(
+                                    "ipfs://",
+                                    "https://ipfs.io/ipfs/"
+                                )
+                            }
                             const tokenId = parseInt(nft.id.tokenId, 16)
                             return (
                                 <div key={nft.id}>
-                                    <Card
-                                        title={nft.title}
-                                        description={nft.description}
-                                        onClick={() =>
-                                            handleShowModal(nft.contract.address, tokenId)
-                                        }
-                                    >
-                                        <div className="p-2 w-fits">
-                                            <div className="flex flex-col items-end gap-2">
-                                                <div>#{tokenId}</div>
-                                                <div className="italic text-sm">
-                                                    Owned by {truncateStr(account, 12)}
-                                                </div>
-                                                <Image
-                                                    loader={() => imageURI}
-                                                    src={imageURI || "./favicon.ico"}
-                                                    height="200"
-                                                    width="200"
-                                                    alt={"nftImage"} />
-                                                {listedNfts?.activeItems.map((item, key) =>{
-                                                    if(item.nftAddress === nft.contract.address && item.tokenId === `${tokenId}`) {
-                                                        return (
-                                                            <div key={key} className="flex flex-col items-end gap-2">
-                                                                listed
+                                    <Link href={`/nft-details/${nft.contract.address}/${tokenId}`}>
+                                        <div>
+                                            <Card
+                                                title={nft.title}
+                                                description={nft.description}
+                                                // onClick={() =>
+                                                //     handleShowModal(nft.contract.address, tokenId)
+                                                // }
+                                            >
+                                                <div className="p-2 w-full">
+                                                    <div className="flex flex-col items-end gap-2">
+                                                        <div className="flex w-full justify-between">
+                                                            <div>
+                                                                {listedNfts?.activeItems.map((item, key) => {
+                                                                    if (item.nftAddress === nft.contract.address && item.tokenId === `${tokenId}`) {
+                                                                        return (
+                                                                            <div key={key}
+                                                                                 className="font-bold text-sm">
+                                                                                LISTED
+                                                                            </div>
+                                                                        )
+                                                                    }
+                                                                })}
                                                             </div>
-                                                        )
-                                                    }
-                                                })}
-                                            </div>
+                                                            <div>#{tokenId}</div>
+                                                        </div>
+                                                        <div className="flex w-full justify-end text-sm italic">
+                                                            Owned by {truncateStr(account, 12)}
+                                                        </div>
+                                                        <Image
+                                                            loader={() => imageURI}
+                                                            src={imageURI || "./al-logo.png"}
+                                                            height="200"
+                                                            width="200"
+                                                            alt={"nftImage"} />
+                                                    </div>
+                                                </div>
+                                            </Card>
                                         </div>
-                                    </Card>
+                                    </Link>
                                 </div>
                             )
                         })

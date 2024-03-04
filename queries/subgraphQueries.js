@@ -31,3 +31,4 @@ export const GET_LISTED_ITEMS_BY_ADDRESS  =(address)=> gql`
        }
     }
 `
+

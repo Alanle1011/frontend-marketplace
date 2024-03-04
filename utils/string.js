@@ -12,15 +12,5 @@ const truncateStr = (fullStr, strLen) => {
         fullStr.substring(fullStr.length - backChars)
     )
 }
-const hexToString = (hex) => {
-    let str = '';
-    for (let i = 0; i < hex.length; i += 2) {
-        const hexValue = hex.substr(i, 2);
-        const decimalValue = parseInt(hexValue, 16);
-        str += String.fromCharCode(decimalValue);
-    }
-    return str;
-};
 
-
-module.exports = { truncateStr, hexToString }
+module.exports = { truncateStr }

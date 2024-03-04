@@ -12,8 +12,6 @@ export default function Home() {
     const marketplaceAddress = chainId === "0xaa36a7" ? networkMapping[chainString].NftMarketPlace[0].toString() : null
     const { loading, error, data: listedNfts } = useQuery(GET_ACTIVE_ITEMS)
 
-    console.log('listedNfts', listedNfts)
-
     useEffect(() => {
         async function changeNetwork() {
             if (window.confirm("You're on the wrong network! Click OK to switch to Sepolia chain!")) {

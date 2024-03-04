@@ -7,15 +7,9 @@ import { ethers } from "ethers"
 import UpdateListingModal from "./UpdateListingModal"
 import { truncateStr } from "../utils/string"
 import Image from "next/image"
-import Link from "next/link"
 
-export default function NFTBox({
-                                   price,
-                                   nftAddress,
-                                   tokenId,
-                                   marketplaceAddress,
-                                   seller
-                               }) {
+import Link from "next/link"
+export default function NFTBox({ price, nftAddress, tokenId, marketplaceAddress, seller }) {
     const { isWeb3Enabled, account, chainId } = useMoralis()
     const [imageURI, setImageURI] = useState("")
     const [tokenName, setTokenName] = useState("")
@@ -114,12 +108,11 @@ export default function NFTBox({
                             nftAddress={nftAddress}
                             onClose={hideModal}
                         />
-                        {/*<Link href={`/nft-details/${nftAddress}/${tokenId}`}>*/}
+                        <Link href={`/nft-details/${nftAddress}/${tokenId}`}>
                             <div>
                                 <Card
                                     title={tokenName}
                                     description={tokenDescription}
-                                        onClick={()=>handleCardClick()}
                                 >
                                     <div className="p-2">
                                         <div className="flex flex-col items-end gap-2">
@@ -144,7 +137,7 @@ export default function NFTBox({
                                     </div>
                                 </Card>
                             </div>
-                        {/*</Link>*/}
+                        </Link>
 
                     </div>
                 ) : (
