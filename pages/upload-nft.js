@@ -16,7 +16,6 @@ export default function UploadNftPage(){
     const [jsonCid, setJsonCid] = useState("");
     const [uploading, setUploading] = useState(false);
 
-
     const uploadToIPFS = async (fileImg) => {
 
         if (fileImg) {
@@ -49,7 +48,10 @@ export default function UploadNftPage(){
                 metadata.name = name;
                 metadata.image = `ipfs://${cid}`;
                 metadata.description = description;
-                metadata.attributes = [];
+                metadata.attributes = [{
+                    value: "red",
+                    trait_type: "Clothes"
+                }];
 
                 const res = await fetch("/api/upload-json-metadata", {
                     method: "POST",
@@ -70,7 +72,6 @@ export default function UploadNftPage(){
     }
 
     async function createNft(uri) {
-        debugger
         const mintOptions = {
             abi: nftMinterAbi,
             contractAddress: minterAddress,

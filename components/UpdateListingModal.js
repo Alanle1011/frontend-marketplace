@@ -27,6 +27,16 @@ export default function UpdateListingModal({
         setPriceToUpdateListingWith("0")
     }
 
+    const { runContractFunction: cancelListing } = useWeb3Contract({
+        abi: nftMarketplaceAbi,
+        contractAddress: marketplaceAddress,
+        functionName: "cancelListing",
+        params: {
+            nftAddress: nftAddress,
+            tokenId: tokenId,
+        },
+    })
+
     const { runContractFunction: updateListing } = useWeb3Contract({
         abi: nftMarketplaceAbi,
         contractAddress: marketplaceAddress,
@@ -52,6 +62,7 @@ export default function UpdateListingModal({
                     onSuccess: handleUpdateListingSuccess,
                 })
             }}
+            o
         >
             <div className="w-[50vw] mb-10">
                 <Input
@@ -62,6 +73,8 @@ export default function UpdateListingModal({
                         setPriceToUpdateListingWith(event.target.value)
                     }}
                 />
+
+
             </div>
         </Modal>
     )

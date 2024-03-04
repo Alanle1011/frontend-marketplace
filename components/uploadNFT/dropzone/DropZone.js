@@ -10,8 +10,8 @@ const DropZone = ({ title, heading, subHeading, name, website, description,image
 
     const { getRootProps, getInputProps } = useDropzone({
         onDrop,
-        accept: "images/*",
-        maxSize: 5000000
+        accept: "image/*",
+        maxSize: 5000000000
     })
 
     return (
