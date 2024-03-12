@@ -1,11 +1,11 @@
-import { Modal, Input, useNotification } from "web3uikit"
+import { Modal, Input, useNotification, Checkbox } from "web3uikit"
 import { useState } from "react"
 import { useWeb3Contract } from "react-moralis"
 import nftMarketplaceAbi from "../constants/NftMarketPlace.json"
 import { ethers } from "ethers"
 import nftAbi from "../constants/BasicNft.json"
 
-export default function SellModal({
+export default function ListingModal({
     nftAddress,
     tokenId,
     isVisible,
@@ -13,8 +13,9 @@ export default function SellModal({
     onClose,
 }) {
     const dispatch = useNotification()
-    const { runContractFunction } = useWeb3Contract();
+    const { runContractFunction, isLoading } = useWeb3Contract();
     const [priceToSellWith, setPriceToSellWith] = useState(0)
+    const [isBidding, setBidding] = useState(false)
 
     const approveAndList = async (nftAddress, tokenId, price) => {
         console.log("Approving...")
@@ -40,11 +41,12 @@ export default function SellModal({
     }
     const handleApproveSuccess= async (tx, nftAddress, tokenId, price) => {
         console.log("Ok! Now time to list")
+        const functionName = isBidding ? "listBiddingItem" : "listItem"
         await tx.wait(1)
         const listOptions = {
             abi: nftMarketplaceAbi,
             contractAddress: marketplaceAddress,
-            functionName: "listItem",
+            functionName: functionName,
             params: {
                 nftAddress: nftAddress,
                 tokenId: tokenId,
@@ -87,15 +89,16 @@ export default function SellModal({
         <Modal
             title={"Listing Price"}
             isVisible={isVisible}
-            onCancel={onClose}
-            onCloseButtonPressed={onClose}
+            onCancel={!isLoading && onClose}
+            onCloseButtonPressed={!isLoading && onClose}
             onOk={() => {
-                approveAndList(nftAddress, tokenId, priceToSellWith)
+                !isLoading && approveAndList(nftAddress, tokenId, priceToSellWith)
             }}
-            o
+            width={"30vw"}
+            isCentered={true}
         >
-            <div className="w-[50vw] mb-10">
-                <Input
+            <div className="mb-10 w-full flex flex-col gap-2">
+                <Input width={'100%'}
                     label="Listing price in L1 Currency (ETH)"
                     name="New listing price"
                     type="number"
@@ -103,6 +106,7 @@ export default function SellModal({
                         setPriceToSellWith(event.target.value)
                     }}
                 />
+                <Checkbox checked={isBidding} onChange={()=> setBidding(!isBidding)} label={"Is Bidding"}/>
             </div>
         </Modal>
     )

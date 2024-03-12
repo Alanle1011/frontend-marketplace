@@ -17,7 +17,6 @@ export default function UploadNftPage(){
     const [uploading, setUploading] = useState(false);
 
     const uploadToIPFS = async (fileImg) => {
-
         if (fileImg) {
             try {
                 setUploading(true);
@@ -38,11 +37,10 @@ export default function UploadNftPage(){
         }
     }
 
-    const uploadJSONToIPFS = async (image, name, description) => {
+    const uploadJSONToIPFS = async (image, name, description, at) => {
         if (image && name && description) {
             try {
                 setUploading(true);
-
                 //make metadata
                 const metadata = {};
                 metadata.name = name;
@@ -95,13 +93,14 @@ export default function UploadNftPage(){
             position: "topR",
         })
     }
-    return (
-        <div className={'px-14'}>
-            <h1 className="py-4 px-4 font-bold text-3xl">Create new NFT</h1>
-            <p>You can set preferred display name, create your profile URL and manage other personal settings.</p>
-            <h2 className="py-4 px-4 font-bold text-2xl">Image, Video, Audio, or 3D Model</h2>
-            <UploadNFT uploadToIPFS={uploadToIPFS} uploadJSONToIPFS={uploadJSONToIPFS} uploading={uploading} cid={cid}/>
 
+    return (
+        <div className={'xl:px-60 lg:px-10 px-0 '}>
+            <h1 className="p-4 font-bold text-3xl">Create new NFT</h1>
+            <p className="px-4">You can set preferred display name, create your profile URL and manage other personal settings.</p>
+            <div className="p-4">
+                <UploadNFT uploadToIPFS={uploadToIPFS} uploadJSONToIPFS={uploadJSONToIPFS} uploading={uploading} cid={cid}/>
+            </div>
         </div>
     )
 }

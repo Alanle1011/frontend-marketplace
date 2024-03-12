@@ -12,5 +12,8 @@ const truncateStr = (fullStr, strLen) => {
         fullStr.substring(fullStr.length - backChars)
     )
 }
+const formatDate = (timestamp) => {
+    return new Intl.DateTimeFormat('en-US', {day: '2-digit',year: 'numeric', month: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp * 1000)
+}
 
-module.exports = { truncateStr }
+module.exports = { truncateStr, formatDate }

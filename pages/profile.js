@@ -6,7 +6,7 @@ import networkMapping from "../constants/networkMapping.json"
 import { useEffect, useState } from "react"
 import Image from "next/image"
 import {truncateStr } from "../utils/string"
-import SellModal from "../components/SellModal"
+import ListingModal from "../components/ListingModal"
 import { useQuery } from "@apollo/client"
 import { GET_LISTED_ITEMS_BY_ADDRESS } from "../queries/subgraphQueries"
 import Link from "next/link"
@@ -35,6 +35,7 @@ export default function Home() {
         method: "get",
         redirect: "follow"
     }
+
     const getAllNFT = () => {
         fetch(URL, requestOptions)
             .then(response => response.json())
@@ -43,15 +44,6 @@ export default function Home() {
                 setNftList(nfts["ownedNfts"])
             })
             .catch(error => console.log("error", error))
-    }
-
-    //Modal
-    const handleCloseModal = () => setShowModal(false)
-    const handleShowModal = (address, tokenId) => {
-        setShowModal(true)
-        setNftAddress(address)
-        setTokenId(tokenId)
-
     }
 
     //Notification
@@ -136,7 +128,7 @@ export default function Home() {
                     ) : (
                         nftList.map((nft) => {
                             let imageURI = nft.metadata.image
-                            if (imageURI.includes("ipfs://")) {
+                            if (imageURI?.includes("ipfs://")) {
                                 imageURI = imageURI.replace(
                                     "ipfs://",
                                     "https://ipfs.io/ipfs/"
@@ -162,7 +154,7 @@ export default function Home() {
                                                                     if (item.nftAddress === nft.contract.address && item.tokenId === `${tokenId}`) {
                                                                         return (
                                                                             <div key={key}
-                                                                                 className="font-bold text-sm">
+                                                                                 className="font-bold text-sm text-green-500">
                                                                                 LISTED
                                                                             </div>
                                                                         )
@@ -195,13 +187,7 @@ export default function Home() {
             </div>
 
 
-            <SellModal
-                isVisible={showModal}
-                tokenId={tokenId}
-                marketplaceAddress={marketplaceAddress}
-                nftAddress={nftAddress}
-                onClose={handleCloseModal}
-            />
+
 
         </div>
     )

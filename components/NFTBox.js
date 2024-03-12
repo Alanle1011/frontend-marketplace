@@ -17,6 +17,11 @@ export default function NFTBox({ price, nftAddress, tokenId, marketplaceAddress,
     const [showModal, setShowModal] = useState(false)
     const hideModal = () => setShowModal(false)
     const dispatchNotification = useNotification()
+    const isOwnedByUser = seller === account || seller === undefined
+    const formattedSellerAddress = isOwnedByUser
+        ? "you"
+        : truncateStr(seller || "", 15)
+
 
     const { runContractFunction: getTokenURI } = useWeb3Contract({
         abi: nftAbi,
@@ -27,16 +32,6 @@ export default function NFTBox({ price, nftAddress, tokenId, marketplaceAddress,
         }
     })
 
-    const { runContractFunction: buyItem } = useWeb3Contract({
-        abi: nftMarketplaceAbi,
-        contractAddress: marketplaceAddress,
-        functionName: "buyItem",
-        msgValue: price,
-        params: {
-            nftAddress: nftAddress,
-            tokenId: tokenId
-        }
-    })
 
     async function updateUI() {
         let tokenURI = await getTokenURI()
@@ -70,32 +65,8 @@ export default function NFTBox({ price, nftAddress, tokenId, marketplaceAddress,
         }
     }, [isWeb3Enabled])
 
-    const isOwnedByUser = seller === account || seller === undefined
-    const formattedSellerAddress = isOwnedByUser
-        ? "you"
-        : truncateStr(seller || "", 15)
 
-    const handleCardClick = (nftAddress, tokenId) => {
-        isOwnedByUser
-            ? setShowModal(true)
-            : buyItem({
-                onError: (error) => console.log(error),
-                onSuccess: () => handleBuyItemSuccess()
 
-            })
-    }
-
-    const handleBuyItemSuccess = () => {
-        dispatchNotification({
-            type: "warning",
-            message: "Item Buying!",
-            title: "Item Buying",
-            position: "topR"
-        })
-        setTimeout(() => {
-            window.location.reload()
-        }, 5000)
-    }
     return (
         <div>
             <div>
