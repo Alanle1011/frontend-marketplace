@@ -37,7 +37,7 @@ export default function UploadNftPage(){
         }
     }
 
-    const uploadJSONToIPFS = async (image, name, description, at) => {
+    const uploadJSONToIPFS = async (image, name, description, traits) => {
         if (image && name && description) {
             try {
                 setUploading(true);
@@ -46,10 +46,10 @@ export default function UploadNftPage(){
                 metadata.name = name;
                 metadata.image = `ipfs://${cid}`;
                 metadata.description = description;
-                metadata.attributes = [{
-                    value: "red",
-                    trait_type: "Clothes"
-                }];
+                metadata.attributes = traits.map(item => ({
+                    value: item.value,
+                    trait_type: item.trait
+                }));
 
                 const res = await fetch("/api/upload-json-metadata", {
                     method: "POST",
@@ -95,7 +95,7 @@ export default function UploadNftPage(){
     }
 
     return (
-        <div className={'xl:px-60 lg:px-10 px-0 '}>
+        <div className={'xl:px-40 lg:px-10 px-0 '}>
             <h1 className="p-4 font-bold text-3xl">Create new NFT</h1>
             <p className="px-4">You can set preferred display name, create your profile URL and manage other personal settings.</p>
             <div className="p-4">

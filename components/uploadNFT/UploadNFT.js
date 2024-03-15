@@ -4,29 +4,47 @@ import DropZone from "./dropzone/DropZone"
 import pubImage from "/public/pug.png"
 import { Button } from "web3uikit"
 import { useRouter } from "next/router"
-import { TraitInput, TraitList } from "../TraitComponent"
+import { TraitInput, TraitList, TraitModal } from "../TraitComponent"
 
 const UploadNFT= ({uploadToIPFS, uploadJSONToIPFS, uploading, cid})=>{
-    const router = useRouter()
-
-    const [active, setActive] = useState(0);
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState(0);
     const [image, setImage] = useState(null);
-    const [traits, setTraits] = useState([]);
+    const [isVisibleModal, setIsVisibleModal] = useState(false)
+    const [traits, setTraits] = useState([{}]);
+    const [editTrait, setEditTrait] = useState(null);
     const handleAddTrait = (newTrait) => {
         setTraits([...traits, newTrait]);
     };
+
+    const handleDeleteTrait = (index) => {
+        debugger
+        const newData = [...traits]; // Create a copy of the array
+        newData.splice(index, 1); // Remove the object at the specified index
+        setTraits(newData);
+    }
+    const handleOpenEditModal = (trait, index)=>{
+        setIsVisibleModal(true);
+        setEditTrait({...trait, index});
+    }
+    const handleEditTrait = (trait, index) => {
+        debugger
+        const newData = [...traits]; // Create a copy of the array
+        newData.splice(index, 1);
+        newData.push(trait)// Remove the object at the specified index
+        setTraits(newData);
+    }
+
     useEffect(()=>{
         if(cid){
             setImage(`https://ipfs.io/ipfs/${cid}`);
         }
-    })
-
+    },[cid])
+    console.log("TRAIT", traits)
     return (
-        <div className='flex gap-10'>
-            <div className="w-1/2">
+        <div className='flex gap-8'>
+            <div className="">
                 <DropZone title={"JPG, PNG, WEBM, GIF MAX 50MB"}
                           heading={'Drag & drop file'}
                           subHeading={"or Browse media on your device"}
@@ -40,7 +58,7 @@ const UploadNFT= ({uploadToIPFS, uploadJSONToIPFS, uploading, cid})=>{
                 />
             </div>
 
-            <div className='flex flex-col w-1/2 gap-8'>
+            <div className='flex flex-col  flex-1 gap-8'>
                 <div className='w-full flex flex-col gap-2'>
                     <p className="text-2xl font-bold">Name *</p>
                     <input type={"text"} placeholder={"Name Your NFT"}
@@ -54,8 +72,8 @@ const UploadNFT= ({uploadToIPFS, uploadJSONToIPFS, uploading, cid})=>{
                 </div>
                 <div className='w-full flex flex-col gap-2'>
                     <p className="text-2xl font-bold">Trait</p>
-                    <TraitList traits={traits} />
-                    <TraitInput onAddTrait={handleAddTrait} />
+                    <TraitList traits={traits} handleEditTrait={handleOpenEditModal} handleDeleteTrait={handleDeleteTrait} />
+                    <button onClick={()=>{setIsVisibleModal(true); setEditTrait(null)}}>Add Trait</button>
                 </div>
                 <div>
                     <Button onClick={() => uploadJSONToIPFS(image, name, description, traits)}>
@@ -63,6 +81,7 @@ const UploadNFT= ({uploadToIPFS, uploadJSONToIPFS, uploading, cid})=>{
                     </Button>
                 </div>
             </div>
+            <TraitModal onDeleteTrait={handleDeleteTrait} onEditTrait={handleEditTrait} editTrait={editTrait || null}  onClose={()=>{setIsVisibleModal(false); setEditTrait(null)}} isVisible={isVisibleModal} onAddTrait={handleAddTrait}/>
         </div>
     )
 }
