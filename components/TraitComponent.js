@@ -59,7 +59,6 @@ const TraitModal = ({onEditTrait, editTrait, onDeleteTrait, onAddTrait, isVisibl
             onCancel={onClose}
             onCloseButtonPressed={onClose}
             onOk={async () => {
-                debugger
                 if (editIndex !== null) {
                     handleEditTrait()
                 } else {

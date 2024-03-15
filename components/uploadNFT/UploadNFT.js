@@ -14,12 +14,11 @@ const UploadNFT= ({uploadToIPFS, uploadJSONToIPFS, uploading, cid})=>{
     const [isVisibleModal, setIsVisibleModal] = useState(false)
     const [traits, setTraits] = useState([{}]);
     const [editTrait, setEditTrait] = useState(null);
+
     const handleAddTrait = (newTrait) => {
         setTraits([...traits, newTrait]);
     };
-
     const handleDeleteTrait = (index) => {
-        debugger
         const newData = [...traits]; // Create a copy of the array
         newData.splice(index, 1); // Remove the object at the specified index
         setTraits(newData);
@@ -29,19 +28,17 @@ const UploadNFT= ({uploadToIPFS, uploadJSONToIPFS, uploading, cid})=>{
         setEditTrait({...trait, index});
     }
     const handleEditTrait = (trait, index) => {
-        debugger
         const newData = [...traits]; // Create a copy of the array
         newData.splice(index, 1);
         newData.push(trait)// Remove the object at the specified index
         setTraits(newData);
     }
-
     useEffect(()=>{
         if(cid){
             setImage(`https://ipfs.io/ipfs/${cid}`);
         }
     },[cid])
-    console.log("TRAIT", traits)
+
     return (
         <div className='flex gap-8'>
             <div className="">

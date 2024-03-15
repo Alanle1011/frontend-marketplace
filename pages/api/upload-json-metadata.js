@@ -19,8 +19,7 @@ const saveJsonData = async (metadata) => {
 export default async function handler(req, res) {
     if (req.method === "POST") {
         try {
-            const  body  = JSON.parse(req.body);
-            console.log(body);
+            const body = JSON.parse(req.body);
             const response = await saveJsonData(body);
             const { IpfsHash } = response;
             return res.send(IpfsHash);
