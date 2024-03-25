@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react"
-import {FaPercent} from "react-icons/fa"
 import DropZone from "./dropzone/DropZone"
-import pubImage from "/public/pug.png"
 import { Button } from "web3uikit"
-import { useRouter } from "next/router"
-import { TraitInput, TraitList, TraitModal } from "../TraitComponent"
+import { TraitList, TraitModal } from "../TraitComponent"
 
 const UploadNFT= ({uploadToIPFS, uploadJSONToIPFS, uploading, cid})=>{
     const [name, setName] = useState("");

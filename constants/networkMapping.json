@@ -11,5 +11,13 @@
     "NftMinter": [
       "0xCE64882565f8995bdc60216b906483bFCA278d76"
     ]
+  },
+  "0x66eee": {
+    "NftMarketPlace": [
+      "0x5C5A9875834Dfb7dFa0579C24C6FF7495e29bAa1"
+    ],
+    "NftMinter": [
+      "0x74EFD13F42f9Ed1a8cE464D839AD8f3c202cdbcf"
+    ]
   }
 }

@@ -15,6 +15,22 @@ export const GET_ACTIVE_LISTED_ITEMS = gql`
       }
     }
 `
+
+export const GET_SLIDESHOW_ITEMS = gql`
+    {
+       activeItems(first: 5, where: { buyer: "0x0000000000000000000000000000000000000000" }, orderBy: blockTimestamp, orderDirection: desc) {
+        id
+        buyer
+        seller
+        nftAddress
+        price
+        tokenId
+        transactionHash
+        blockTimestamp
+        blockNumber
+      }
+    }
+`
 export const GET_ACTIVE_BIDDING_ITEMS = gql`
     {
       activeItems(where: { buyer_not: "0x000000000000000000000000000000000000dEaD", isBidding: true, isFinishedBidding:false }, orderBy: blockTimestamp, orderDirection: desc) {
@@ -25,7 +41,8 @@ export const GET_ACTIVE_BIDDING_ITEMS = gql`
             price
             tokenId
             isBidding
-            endTime
+            endBuyTime
+            startBuyTime
             isFinishedBidding
             transactionHash
             blockTimestamp

@@ -12,7 +12,7 @@ export default function Header() {
                     capture the NFT landscape with us 🚀 🚀
                 </p>
             </div>
-            <nav className="sticky top-1 px-16 border-b-2 flex flex-row justify-between items-center bg-white">
+            <nav className="sticky top-0 px-16 border-b-2 flex flex-row justify-between items-center bg-white z-50">
                 <div className="flex w-full h-full">
                     <Link href="/">
                         <div className='flex'>

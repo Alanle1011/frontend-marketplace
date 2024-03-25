@@ -25,10 +25,10 @@ export default function Home() {
     const [nftAddress, setNftAddress] = useState()
 
     //Get the NFT listed on Marketplace
-    const { loading, error, data: listedNfts } = useQuery(GET_LISTED_ITEMS_BY_ADDRESS(account))
+    const { loading, error, data: listedNfts } = useQuery(GET_LISTED_ITEMS_BY_ADDRESS(account), { context: {clientName: chainId}})
 
     //get all NFT by address
-    const BASE_URL = process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL || "https://eth-sepolia.g.alchemy.com/v2/cG8GOT4HrTWOuGF8guWUq7JtQyJfY7H2"
+    const BASE_URL = chainId === "0x66eee" ? process.env.NEXT_PUBLIC_ARBITRUM_RPC_URL : process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL
     const ADDRESS = account
     const URL = `${BASE_URL}/getNFTs/?owner=${ADDRESS}`
     var requestOptions = {
@@ -111,7 +111,7 @@ export default function Home() {
             )}
             <div className="flex flex-wrap gap-3 p-4 ">
 
-                {isWeb3Enabled && chainId === "0xaa36a7" ? (
+                {isWeb3Enabled && (chainId === "0xaa36a7" ||  chainId === "0x66eee")? (
                     !nftList ? (
                         <div className={"w-full h-full flex justify-center items-center"}>
                             <svg aria-hidden="true"

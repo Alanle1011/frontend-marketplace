@@ -27,23 +27,7 @@
     "type": "error"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "nftAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "price",
-        "type": "uint256"
-      }
-    ],
+    "inputs": [],
     "name": "NftMarketPlace__BiddingTimeIsOver",
     "type": "error"
   },
@@ -61,7 +45,12 @@
       },
       {
         "internalType": "uint256",
-        "name": "endTime",
+        "name": "startBuyTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "endBuyTime",
         "type": "uint256"
       }
     ],
@@ -318,13 +307,19 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "price",
+        "name": "startBuyTime",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "endTime",
+        "name": "endBuyTime",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "price",
         "type": "uint256"
       }
     ],
@@ -437,7 +432,12 @@
           },
           {
             "internalType": "uint256",
-            "name": "endTime",
+            "name": "startBuyTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "endBuyTime",
             "type": "uint256"
           }
         ],

@@ -3,12 +3,23 @@ import Head from "next/head"
 import { MoralisProvider, useChain, useMoralis } from "react-moralis"
 import Header from "../components/Header"
 import { NotificationProvider } from "web3uikit"
-import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client"
-import { useEffect } from "react"
+import { ApolloProvider, ApolloClient, InMemoryCache, HttpLink, ApolloLink } from "@apollo/client"
+import Footer from "../components/Footer"
+
+const arbitrum = new HttpLink({
+    uri: process.env.NEXT_PUBLIC_SUBGRAPH_ARBITRUM_URL,
+})
+const sepolia = new HttpLink({
+    uri: process.env.NEXT_PUBLIC_SUBGRAPH_URL,
+})
 
 const client = new ApolloClient({
     cache: new InMemoryCache(),
-    uri: process.env.NEXT_PUBLIC_SUBGRAPH_URL || "https://api.studio.thegraph.com/query/55678/v4/v0.0.7",
+    link: ApolloLink.split(
+        operation => operation.getContext().clientName === '0xaa36a7',
+        sepolia, //if above
+        arbitrum,
+    )
 })
 
 function MyApp({ Component, pageProps }) {
@@ -20,10 +31,11 @@ function MyApp({ Component, pageProps }) {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MoralisProvider initializeOnMount={false}>
-                <ApolloProvider client={client}>
+                <ApolloProvider client={client} >
                     <NotificationProvider>
                             <Header />
                             <Component {...pageProps} />
+                            <Footer />
                     </NotificationProvider>
                 </ApolloProvider>
             </MoralisProvider>
